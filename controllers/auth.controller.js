@@ -16,7 +16,7 @@ export const signUp = async (req, res) => {
   const user = await User.create({ name, email, password, role })
   const token = user.createJWT()
 
-  res.status(201).json({ message: 'User signed up successfully', user: { name: user.name, token: token } })
+  res.status(201).json({ message: 'User signed up successfully', user: { name: user.name, id: user._id, token: token } })
 }
 
 // @desc   Sign in user
@@ -34,5 +34,5 @@ export const signIn = async (req, res) => {
 
   const token = user.createJWT()
 
-  res.status(200).json({ message: 'User signed in successfully', user: { name: user.name, token: token } })
+  res.status(200).json({ message: 'User signed in successfully', user: { name: user.name, id: user._id, token: token } })
 }
