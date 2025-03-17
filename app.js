@@ -14,6 +14,10 @@ import cors from 'cors'
 import mongoSanitize from 'express-mongo-sanitize'
 import { xss } from 'express-xss-sanitizer'
 import helmet from 'helmet'
+// swagger doc
+import swaggerUI from 'swagger-ui-express'
+import YAML from 'yamljs'
+const swaggerDocument = YAML.load('./swagger.yaml')
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -23,13 +27,13 @@ const PORT = process.env.PORT || 5000
 // use to slow repeated requests to API and/or endpoint
 app.use(slowDown({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  delayAfter: 5, // allow 5 requests per 15 minutes
+  delayAfter: 10, // allow 10 requests per 15 minutes
   delayMs: (hits) => hits * 100 // add 100 ms of delay to every requests after the 5th one
 }))
 // basic rate-limiting. Use to block repeated requests to public API
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 10, // Limit each IP to 10 requests per `window` (here, per 15 minutes).
+	limit: 20, // Limit each IP to 20 requests per `window` (here, per 15 minutes).
 	standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
 }))
@@ -55,6 +59,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/users', authorize, userRouter)
 app.use('/api/v1/subscriptions', authorize, subscriptionsRouter)
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument))
 
 // error handler
 app.use(notFound)

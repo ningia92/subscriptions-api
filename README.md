@@ -62,3 +62,16 @@ Email Validation Regex
 - express-xss-sanitizer
 - helmet
 - cors
+
+#### Swagger UI
+
+```yaml
+/subscriptions/{id}:
+  parameters:
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+      description: the subscription id
+```

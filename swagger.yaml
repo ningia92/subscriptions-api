@@ -1,0 +1,336 @@
+openapi: 3.0.0
+info:
+  title: Subscriptions Tracker API
+  contact: {}
+  version: '1.0'
+servers:
+  - url: https://subscriptions-api-hsig.onrender.com/api/v1
+    variables: {}
+paths:
+  /auth/sign-up:
+    post:
+      tags:
+        - Auth
+      summary: Sign-up (user/admin)
+      operationId: Signup
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+            example:
+              name: pippo
+              email: pippo@gmail.com
+              password: secret
+              adminSecret: ""
+        required: true
+      responses:
+        '201':
+          description: 'CREATED'
+          headers: {}
+      deprecated: false
+      security: []
+  /auth/sign-in:
+    post:
+      tags:
+        - Auth
+      summary: Sign-in (user/admin)
+      operationId: Signin
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninRequest'
+            example:
+              email: pippo@gmail.com
+              password: secret
+        required: true
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+      deprecated: false
+      security: []
+  /subscriptions:
+    post:
+      tags:
+        - Subscriptions
+      summary: Create Subscription (user/admin)
+      operationId: CreateSubscription
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscriptionRequest'
+            example:
+              name: Netflix
+              price: 12.99
+              frequency: monthly
+              category: entertainment
+              paymentMethod: paypal
+              startDate: 2025-03-17T00:00:00.000Z
+        required: true
+      responses:
+        '201':
+          description: 'CREATED'
+          headers: {}
+      deprecated: false
+    get:
+      tags:
+        - Subscriptions
+      summary: Get All Subscriptions (admin)
+      operationId: GetAllSubscriptions
+      parameters: []
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+      deprecated: false
+  /subscriptions/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The subscription ID
+    get:
+      tags:
+        - Subscriptions
+      summary: Get Single Subscription (user/admin)
+      operationId: GetSingleSubscription
+      parameters: []
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+      deprecated: false
+    patch:
+      tags:
+        - Subscriptions
+      summary: Update Subscription (user/admin)
+      operationId: UpdateSubscription
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubscriptionRequest'
+            example:
+              name: Netflix
+              price: 12.99
+              frequency: monthly
+              category: entertainment
+              paymentMethod: paypal
+              startDate: 2025-03-17T00:00:00.000Z
+      responses:
+        '204':
+          description: 'NO-CONTENT'
+          headers: {}
+      deprecated: false
+    delete:
+      tags:
+        - Subscriptions
+      summary: Delete Subscription (user/admin)
+      operationId: DeleteSubscription
+      parameters: []
+      responses:
+        '204':
+          description: 'NO-CONTENT'
+          headers: {}
+      deprecated: false
+  /subscriptions/users/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    get:
+      tags:
+        - Subscriptions
+      summary: Get All User Subscriptions (user/admin)
+      operationId: GetUserSubscriptions
+      parameters: []
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+      deprecated: false
+  /subscriptions/{id}/cancel:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The subscription ID
+    patch:
+      tags:
+        - Subscriptions
+      summary: Cancel Subscription (user)
+      operationId: CancelSubscription
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelSubscriptionRequest'
+            example:
+              status: canceled
+      responses:
+        '204':
+          description: 'NO-CONTENT'
+          headers: {}
+      deprecated: false
+  /subscriptions/upcoming-renewals:
+    get:
+      tags:
+        - Subscriptions
+      summary: Get Upcoming Renewals (user)
+      operationId: GetUpcomingRenewals
+      parameters: []
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+      deprecated: false
+components:
+  schemas:
+    SignupUserRequest:
+      title: SignupRequest
+      required:
+        - name
+        - email
+        - password
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        adminSecret:
+          type: string
+      example:
+        name: bob
+        email: bob@gmail.com
+        password: secret
+        adminSecret: ""
+    SigninUserRequest:
+      title: SigninRequest
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: pippo@gmail.com
+        password: secret
+    CreateSubscriptionRequest:
+      title: CreateSubscriptionRequest
+      required:
+        - name
+        - price
+        - frequency
+        - category
+        - paymentMethod
+        - startDate
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+        currency:
+          type: string
+          enum: ['USD', 'EUR', 'GBP']
+        frequency:
+          type: string
+          enum: ['daily', 'weekly', 'monthly', 'yearly']
+        category:
+          type: string
+          enum: ['sports', 'news', 'entertainment', 'lifestyle', 'technology', 'finance', 'politics', 'other']
+        paymentMethod:
+          type: string
+        status:
+          type: string
+          enum: ['active', 'canceled', 'expired']
+        startDate:
+          type: date
+        renewalDate:
+          type: date
+      example:
+        name: Netflix
+        price: 12.99
+        frequency: monthly
+        category: entertainment
+        paymentMethod: paypal
+        startDate: 2025-03-17T00:00:00.000Z
+    UpdateSubscriptionRequest:
+      title: UpdateSubscriptionRequest
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+        currency:
+          type: string
+          enum: ['USD', 'EUR', 'GBP']
+        frequency:
+          type: string
+          enum: ['daily', 'weekly', 'monthly', 'yearly']
+        category:
+          type: string
+          enum: ['sports', 'news', 'entertainment', 'lifestyle', 'technology', 'finance', 'politics', 'other']
+        paymentMethod:
+          type: string
+        status:
+          type: string
+          enum: ['active', 'canceled', 'expired']
+        startDate:
+          type: date
+        renewalDate:
+          type: date
+      example:
+        name: Netflix
+        price: 12.99
+        frequency: monthly
+        category: entertainment
+        paymentMethod: paypal
+        startDate: 2025-03-17T00:00:00.000Z
+    CancelSubscriptionRequest:
+      title: CancelSubscriptionRequest
+      type: object
+      properties:
+        status:
+          type: string
+          enum: ['active', 'canceled', 'expired']
+      example:
+        status: canceled
+  securitySchemes:
+    httpBearer:
+      type: http
+      scheme: bearer
+security:
+  - httpBearer: []
+tags:
+  - name: Auth
+    description: ''
+  - name: Subscriptions
+    description: ''
