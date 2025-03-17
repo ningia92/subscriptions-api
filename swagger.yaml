@@ -206,7 +206,7 @@ paths:
       deprecated: false
 components:
   schemas:
-    SignupUserRequest:
+    SignupRequest:
       title: SignupRequest
       required:
         - name
@@ -227,7 +227,7 @@ components:
         email: bob@gmail.com
         password: secret
         adminSecret: ""
-    SigninUserRequest:
+    SigninRequest:
       title: SigninRequest
       required:
         - email
