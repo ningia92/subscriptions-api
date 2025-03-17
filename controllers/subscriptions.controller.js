@@ -14,14 +14,14 @@ export const getSubscriptions = async (req, res) => {
 }
 
 // @desc   Get subscription (user/admin)
-// @route  GET /api/v1/subscription/:id
+// @route  GET /api/v1/subscriptions/:id
 export const getSubscription = async (req, res) => {
   const id = req.params.id
   const subscription = await Subscription.findById(id)
 
   // check if the user who want to get the sub is not the same that who created it
   // and if the user is not admin
-  if (req.user.id !== subscription.user && req.user.role !== 'admin') {
+  if (req.user.id !== String(subscription.user) && req.user.role !== 'admin') {
     throw Object.assign(new Error('Forbidden resource'), { statusCode: 403 })
   }
 
@@ -46,7 +46,7 @@ export const updateSubscription = async (req, res) => {
 
   // check if the user who want to update the sub is not the same that who created it
   // and if the user is not admin
-  if (req.user.id !== subscription.user && req.user.role !== 'admin') {
+  if (req.user.id !== String(subscription.user) && req.user.role !== 'admin') {
     throw Object.assign(new Error('Forbidden resource'), { statusCode: 403 })
   }
 
@@ -81,7 +81,7 @@ export const deleteSubscription = async (req, res) => {
 
   // check if the user who want to delete the sub is not the same that who created it
   // and if the user is not admin
-  if (req.user.id !== subscription.user && req.user.role !== 'admin') {
+  if (req.user.id !== String(subscription.user) && req.user.role !== 'admin') {
     throw Object.assign(new Error('Forbidden resource'), { statusCode: 403 })
   }
 
@@ -120,7 +120,7 @@ export const cancelSubscription = async (req, res) => {
   const subscription = await Subscription.findById(id)
 
   // check if the user who want to cancel the sub is not the same that who created it
-  if (req.user.id !== subscription.user) {
+  if (req.user.id !== String(subscription.user)) {
     throw Object.assign(new Error('Forbidden resource'), { statusCode: 403 })
   }
 
